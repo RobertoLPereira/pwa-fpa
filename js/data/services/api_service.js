@@ -318,6 +318,66 @@ export class ApiServiceFpa {
             return false;
         }
     }
+    async listarTecnologias() {
+        const url = baseUrl + '/api/tecnologias';
+        try {
+            const resposta = await fetch(url);
+            if (!resposta.ok) throw new Error('Erro ao buscar tecnologias (' + resposta.status + ')');
+            return await resposta.json();
+        } catch (erro) {
+            console.error("Erro no SQLite [listarTecnologias]:", erro);
+            return [];
+        }
+    }
 
+    /**
+     * Cadastra uma nova tecnologia disparando a validação contra nomes duplicados
+     */
+    async cadastrarTecnologia(dadosTec) {
+        const url = baseUrl + '/api/tecnologias';
+        try {
+            const resposta = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosTec)
+            });
+            return resposta.ok ? "sucesso" : "Erro ao processar dados no banco.";
+        } catch (erro) {
+            console.error("Erro no SQLite [cadastrarTecnologia]:", erro);
+            return erro.message;
+        }
+    }
+
+    /**
+     * Atualiza os fatores h/PF de uma tecnologia existente pelo ID físico
+     */
+    async atualizarTecnologia(id, dadosTec) {
+        const url = baseUrl + '/api/tecnologias/' + id;
+        try {
+            const resposta = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosTec)
+            });
+            return resposta.ok ? "sucesso" : "Erro ao atualizar registro.";
+        } catch (erro) {
+            console.error("Erro no SQLite [atualizarTecnologia]:", erro);
+            return erro.message;
+        }
+    }
+
+    /**
+     * Remove uma tecnologia do ecossistema caso não existam projetos associados
+     */
+    async deletarTecnologia(id) {
+        const url = baseUrl + '/api/tecnologias/' + id;
+        try {
+            const resposta = await fetch(url, { method: 'DELETE' });
+            return resposta.ok;
+        } catch (erro) {
+            console.error("Erro no SQLite [deletarTecnologia]:", erro);
+            return false;
+        }
+    }
 }
 
