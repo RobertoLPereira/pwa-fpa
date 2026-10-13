@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Métricas FPA</title>
+    
+    <!-- Link obrigatório para o Manifesto PWA que criamos -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Configuração de cor da barra de status no Mobile (Mesmo padrão do Flutter) -->
+    <meta name="theme-color" content="#0F172A">
+    
+    <!-- Suporte básico para instalação nativa no iOS (Safari) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+
+    <!-- Arquivo de estilo puro que criaremos a seguir -->
+    <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+    <!-- AppBar Superior Corporativa (Equivalente à AppBar do main.dart) -->
+    <header class="app-bar">
+        <div class="logo-titulo">FPA Metrificação</div>
+        <div id="projeto-ativo-display" class="projeto-tag">Selecione um Projeto</div>
+    </header>
+
+    <!-- Estrutura de Navegação Principal do Ecossistema -->
+    <div class="layout-shell">
+        
+        <!-- Menu de Abas Lateral/Inferior Adaptativo (Equivalente ao NavigationRail / BottomNavigationBar) -->
+        <nav class="navigation-menu">
+            <button class="nav-item active" data-aba="projetos">
+                <span class="icon">📋</span><span class="label">Projetos</span>
+            </button>
+            <button class="nav-item" data-aba="dashboard">
+                <span class="icon">📊</span><span class="label">Dashboard</span>
+            </button>
+            <button class="nav-item" data-aba="horas">
+                <span class="icon">⏱️</span><span class="label">Horas</span>
+            </button>
+            <button class="nav-item" data-aba="cronograma">
+                <span class="icon">📅</span><span class="label">Cronograma</span>
+            </button>
+            <button class="nav-item" data-aba="admin">
+                <span class="icon">⚙️</span><span class="label">Admin</span>
+            </button>
+        </nav>
+
+        <!-- Container Principal Onde as Telas Serão Injetadas Dinamicamente (Equivalente ao body/telas[idx]) -->
+        <main id="conteudo-principal" class="viewport-content">
+            <div class="carregando-inicial">Inicializando Ecossistema FPA...</div>
+        </main>
+
+    </div>
+
+    <!-- Script de Inicialização da UI e Registro do PWA -->
+    <script type="module">
+        // 🛡️ REGISTRO DO SERVICE WORKER (Ativa o comportamento PWA Offline de forma nativa)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registro => {
+                        console.log('Service Worker registrado com sucesso no escopo:', registro.scope);
+                    })
+                    .catch(erro => {
+                        console.error('Falha ao registrar o Service Worker:', erro);
+                    });
+            });
+        }
+
+        // Inicialização do Gerenciador de Views (Criaremos nas próximas etapas)
+        import { ViewManager } from './js/presentation/viewmanager.js';
+        window.addEventListener('DOMContentLoaded', () => {
+            const manager = new ViewManager();
+            manager.inicializar();
+        });
+    </script>
+</body>
+</html>

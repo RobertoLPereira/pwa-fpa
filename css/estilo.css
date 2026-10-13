@@ -1,0 +1,553 @@
+/* ==========================================================================
+   1. VARIÁVEIS GLOBAIS E RESET DE LAYOUT (Padrão Clean)
+   ========================================================================== */
+:root {
+    --cor-primaria: #0F172A;       /* Azul Escuro Corporativo Slate-900 */
+    --cor-secundaria: #1E293B;     /* Slate-800 para subtítulos e cards */
+    --cor-destaque: #4ADE80;       /* Verde de sucesso/ativação */
+    --cor-azul-fpa: #1E40AF;       /* Azul de totalização das tabelas */
+    --cor-fundo: #F1F5F9;          /* Cinza claro para o fundo da aplicação */
+    --cor-card: #FFFFFF;           /* Branco puro para blocos e planilhas */
+    --cor-borda: #E2E8F0;          /* Linha de grade suave estilo planilha */
+    --cor-texto: #334155;          /* Texto principal legível */
+    --font-padrao: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-padrao);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Evita rolagem na janela inteira, isolando o scroll nas views */
+}
+
+/* ==========================================================================
+   2. APPBAR SUPERIOR (Equivalente à AppBar do Flutter)
+   ========================================================================== */
+.app-bar {
+    background-color: var(--cor-primaria);
+    color: #FFFFFF;
+    height: 56px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.logo-titulo {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.projeto-tag {
+    font-size: 13px;
+    color: #94A3B8;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Evita quebra se o nome do escopo for longo */
+}
+
+/* ==========================================================================
+   3. ARQUITETURA DO SHELL DE NAVEGAÇÃO (Desktop/Web Default)
+   ========================================================================== */
+.layout-shell {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* Menu de Abas Lateral (Equivalente ao NavigationRail) */
+.navigation-menu {
+    background-color: var(--cor-primaria);
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 16px;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: #94A3B8;
+    width: 100%;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-item .icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.nav-item .label {
+    font-size: 11px;
+}
+
+/* Estado Ativo do Menu Lateral (Chaveamento Reativo) */
+.nav-item.active {
+    color: var(--cor-destaque);
+    font-weight: bold;
+}
+
+/* Viewport Principal das Telas (Equivalente ao Expanded(child: telas[idx])) */
+.viewport-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto; /* Rolagem vertical nativa protegida por view */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* State de carregamento estilizado */
+.carregando-inicial {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    color: #64748B;
+}
+
+/* ==========================================================================
+   4. COMPONENTES REUTILIZÁVEIS E PLANILHAS CARD
+   ========================================================================== */
+/* Proteção Universal de Transbordo de Tabelas (Equivalente ao TabelaResponsiva) */
+.tabela-responsiva {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--cor-borda);
+    background-color: var(--cor-card);
+    margin-top: 12px;
+}
+
+/* Cards Padrão do Sistema (Corrigido o Fechamento de Chaves) */
+.card-fpa {
+    background-color: var(--cor-card);
+    border-radius: 8px;
+    border: 1px solid var(--cor-borda);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   5. GRID DE PROJETOS E ENTRADA DE DADOS ASYNC
+   ========================================================================== */
+.painel-fpa-grid {
+    display: grid;
+    grid-template-columns: 4fr 3fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.campo-grupo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.campo-grupo label {
+    font-size: 11px;
+    font-weight: bold;
+    color: #64748B;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.campo-grupo input, .campo-grupo select {
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--cor-primaria);
+    background-color: white;
+}
+
+.linha-adaptativa {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.btn-fpa-primario {
+    background-color: var(--cor-primaria);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.item-projeto-card {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    background-color: white;
+}
+
+.item-projeto-card.selecionado {
+    background-color: #F0FDF4;
+    border-color: #4ADE80;
+}
+
+.item-projeto-infos {
+    flex: 1;
+    margin-left: 12px;
+}
+
+.item-projeto-nome {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--cor-primaria);
+}
+
+.item-projeto-gerente {
+    font-size: 11px;
+    color: #64748B;
+}
+
+/* ==========================================================================
+   6. INPUTS INLINE DO CRUD DE FUNÇÕES (Mapeamento de Escopo)
+   ========================================================================== */
+.painel-inputs-funcao {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.flex-3 { flex: 3; min-width: 200px; }
+.flex-2 { flex: 2; min-width: 140px; }
+.width-80 { width: 80px; min-width: 70px; }
+
+.campo-acoes-inline {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.btn-fpa-salvar {
+    background-color: #0F172A;
+    color: white;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.btn-fpa-salvar.modo-check {
+    background-color: #16A34A;
+}
+
+.btn-fpa-secundario {
+    background-color: #E2E8F0;
+    color: #475569;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-acao-tabela:hover {
+    transform: scale(1.15);
+    transition: transform 0.1s ease;
+}
+
+/* ==========================================================================
+   7. INTERFACE ADAPTATIVA REATIVA (Media Queries Nativas)
+   ========================================================================== */
+/* Ponto de quebra médio para o painel de projetos */
+@media (max-width: 850px) {
+    .painel-fpa-grid {
+        grid-template-columns: 1fr;
+    }
+    .linha-adaptativa {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Ponto de quebra para o formulário de funções inline */
+@media (max-width: 650px) {
+    .painel-inputs-funcao {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .width-80 {
+        width: 100%;
+    }
+    .btn-fpa-salvar, .btn-fpa-secundario {
+        width: 100%;
+        margin-top: 8px;
+    }
+    .campo-acoes-inline {
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+/* 📱 Smartphones e Telas Micro (< 600px) - Inversão Arquitetural */
+@media (max-width: 600px) {
+    .app-bar {
+        padding: 0 16px;
+    }
+
+    .logo-titulo {
+        display: none;
+    }
+
+    .layout-shell {
+        flex-direction: column-reverse; /* Inverte o menu para a base da tela */
+    }
+
+    .navigation-menu {
+        width: 100%;
+        height: 56px;
+        flex-direction: row;
+        justify-content: space-around;
+        padding-top: 0;
+        border-right: none;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-item {
+        width: auto;
+        flex: 1;
+        padding: 6px 0;
+    }
+
+    .nav-item .icon {
+        font-size: 18px;
+        margin-bottom: 2px;
+    }
+
+    .nav-item .label {
+        font-size: 10px;
+    }
+
+    .viewport-content {
+        padding: 16px;
+    }
+}
+/* ==========================================================================
+   9. CORREÇÃO DE CLASSES HIGIÊNICAS PARA O MÓDULO DE FUNÇÕES
+   ========================================================================== */
+.form-titulo-fpa {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0F172A;
+    margin-bottom: 16px;
+}
+
+.select-fpa-nativo {
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--cor-primaria);
+    background-color: white;
+}
+
+.automacao-crud-box {
+    margin-top: 12px;
+}
+
+.checkbox-fpa-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #1E40AF;
+    cursor: pointer;
+}
+
+.checkbox-fpa-input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--cor-primaria);
+}
+
+.tabela-fpa-vazia {
+    padding: 32px;
+    text-align: center;
+    font-style: italic;
+    color: #64748B;
+}
+
+.tabela-fpa-escopo {
+    width: 100%;
+    min-width: 750px;
+    border-collapse: collapse;
+}
+
+.tabela-fpa-escopo thead tr {
+    background-color: #F8FAFC;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.tabela-fpa-escopo th {
+    padding: 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: bold;
+    color: #64748B;
+}
+
+.tabela-fpa-escopo th.col-tipo { width: 80px; }
+.tabela-fpa-escopo th.col-num { width: 90px; text-align: center; }
+.tabela-fpa-escopo th.col-complex { width: 120px; text-align: center; }
+.tabela-fpa-escopo th.col-acoes { width: 100px; text-align: center; }
+
+.tabela-fpa-escopo tbody tr {
+    border-bottom: 1px solid var(--cor-borda);
+    background-color: white;
+}
+
+.tabela-fpa-escopo td {
+    padding: 12px;
+}
+
+.chip-fpa-sigla {
+    background-color: #EFF6FF;
+    color: #1E40AF;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.celula-descricao {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.celula-centro {
+    text-align: center;
+    font-size: 13px;
+}
+
+.chip-fpa-complexidade {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.chip-baixa { background-color: #F0FDF4; color: #16A34A; }
+.chip-media { background-color: #FEF3C7; color: #92400E; }
+.chip-complexa { background-color: #FEE2E2; color: #991B1B; }
+
+.container-acoes-tabela {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+}
+
+.btn-acao-tabela {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 14px;
+}
+
+.btn-editar-func { color: #2563EB; }
+.btn-excluir-func { color: #DC2626; }
+/* Classes utilitárias nativas para chaveamento reativo de visibilidade */
+.exibir-bloco {
+    display: block !important;
+}
+
+.ocultar-bloco {
+    display: none !important;
+}
+/* ==========================================================================
+   10. ESTILIZAÇÃO DO CONTEXTO DE SUB-ABAS ADMIN (TABBAR NATIVO)
+   ========================================================================== */
+.sub-tab-bar-fpa {
+    display: flex;
+    border-bottom: 2px solid var(--cor-borda);
+    gap: 8px;
+    overflow-x: auto;
+    background-color: white;
+    padding: 0 8px;
+    border-radius: 6px 6px 0 0;
+}
+
+.sub-tab-item {
+    background: none;
+    border: none;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748B;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.sub-tab-item:hover {
+    color: var(--cor-primaria);
+}
+
+.sub-tab-item.active {
+    color: var(--cor-primaria);
+    font-weight: bold;
+}
+
+.sub-tab-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--cor-destaque); /* Linha verde de ativação */
+}
+
+.slider-fpa-nativo:active {
+    transform: scaleY(1.2);
+}
+
+@media (max-width: 750px) {
+    #grid-sliders-container {
+        grid-template-columns: 1fr !important; /* Força coluna única de sliders no celular */
+    }
+}
