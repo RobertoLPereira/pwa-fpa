@@ -6,7 +6,7 @@
  */
 export const AmbienteConfig = Object.freeze({
     // URL base que aponta para o backend Python FastAPI separado
-    baseUrl: 'https://backend-fpa.up.railway.app',//'http://localhost:8000',// Altere para o IP de produção/servidor quando necessário    
+    baseUrl: 'http://localhost:8000',//'https://backend-fpa.up.railway.app',// Altere para o IP de produção/servidor quando necessário    
     // Configurações auxiliares do PWA que podem ser reaproveitadas pelos Services
     versaoApp: '1.0.0',
     timeoutRequisicao: 5000 // Tempo limite padrão de 5 segundos para fail-fast

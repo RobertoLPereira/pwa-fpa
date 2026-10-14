@@ -2,7 +2,7 @@
    1. VARIÁVEIS GLOBAIS E RESET DE LAYOUT (Padrão Clean)
    ========================================================================== */
 :root {
-    --cor-primaria: #0F172A;       /* Azul Escuro Corporativo Slate-900 */
+    --cor-primaria: #0f2a26;       /* Azul Escuro Corporativo Slate-900 */
     --cor-secundaria: #1E293B;     /* Slate-800 para subtítulos e cards */
     --cor-destaque: #4ADE80;       /* Verde de sucesso/ativação */
     --cor-azul-fpa: #1E40AF;       /* Azul de totalização das tabelas */
@@ -549,5 +549,86 @@ body {
 @media (max-width: 750px) {
     #grid-sliders-container {
         grid-template-columns: 1fr !important; /* Força coluna única de sliders no celular */
+    }
+}
+/* Layout Geral Baseado em CSS Grid */
+.modulo-projetos-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sidebar-projetos {
+    background: #fdfdfd;
+    border-right: 1px solid #e2e8f0;
+    padding: 15px;
+}
+
+.scroll-v {
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.item-projeto-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    transition: transform 0.15s, border-color 0.15s;
+}
+
+.item-projeto-ativo {
+    border-left: 4px solid #0066cc;
+    background: #f0f7ff;
+}
+
+.item-projeto-acoes {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* Formulários e Alinhamentos */
+.card-formulario {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-pequeno {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+}
+
+/* Regra Adaptativa Nativa para Mobile/Tablets de Telas Pequenas */
+@media (max-width: 768px) {
+    .modulo-projetos-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-row {
+        grid-template-columns: 1fr;
     }
 }

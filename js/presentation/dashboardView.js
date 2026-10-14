@@ -45,9 +45,14 @@ export class DashboardView {
 
             // 4. Integração Dinâmica da Matriz do Grau de Influência (NI)
             // Se o projeto for ID 1 (Manutenção Dicionário), o NI oficial do banco é 14
-            let nivelInfluencia = 14; 
-            if (projetoId === 3) nivelInfluencia = 11; // Exemplo para o projeto CUP
+            //let nivelInfluencia = projetoComercial.produtividade_desenvolvimento//14;             
+            //if (projetoId === 3) nivelInfluencia = 11; // Exemplo para o projeto CUP
+            const produtividadeMapeada = projetoComercial.tipo_atividade === 'Desenvolvimento'
+                ? projetoComercial.produtividade_desenvolvimento
+                : projetoComercial.produtividade_manutencao;
 
+            // 2. Garante que se o banco vier sem o registro da tecnologia, o sistema use o fallback seguro (14)
+            let nivelInfluencia = parseFloat(produtividadeMapeada) || 14;
             const fatorAjuste = ajusteBasal + (0.01 * nivelInfluencia);
             const pfAjustados = pfBrutos * fatorAjuste;
             const valorTotal = pfAjustados * valorPorPf;

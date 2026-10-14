@@ -14,7 +14,8 @@ const ATIVOS_ESTATICOS = [
     '/js/core/ambiente.js',
     '/js/presentation/viewmanager.js',
     '/assets/icons/icon-192x192.png',
-    '/assets/icons/icon-512x512.png'
+    '/assets/icons/icon-512x512.png',
+    '/assets/icons/app_icon.png'
 ];
 
 // 1. EVENTO DE INSTALAÇÃO: Armazena os arquivos da estrutura na memória local do navegador

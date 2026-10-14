@@ -42,6 +42,24 @@ export class ApiServiceFpa {
             return false;
         }
     }
+        /**
+     * Atualiza os dados de um projeto existente passando o ID no final da URL
+     * Contrato homologado: PUT /api/projetos/{projeto_id}
+     */
+    async atualizarProjeto(projetoId, dadosProjeto) {
+        const url = baseUrl + '/api/projetos/' + projetoId;
+        try {
+            const resposta = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dadosProjeto)
+            });
+            return resposta.ok;
+        } catch (erro) {
+            console.error("Erro no SQLite [atualizarProjeto]:", erro);
+            return false;
+        }
+    }
 
     // ==========================================================================
     // 📋 2. MÓDULO DE FUNÇÕES COMPONENTES FPA (Equivalente ao ApiServiceFuncao)
