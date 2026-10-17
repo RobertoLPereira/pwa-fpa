@@ -10,9 +10,6 @@ export class ApiServiceFpa {
     // 🏢 1. MÓDULO DE PROJETOS (Equivalente ao ApiServiceProjeto)
     // ==========================================================================
 
-    /**
-     * Lista todos os projetos cadastrados em formato resumido para a barra lateral/celular
-     */
     async listarProjetos() {
         const url = baseUrl + '/api/projetos';
         try {
@@ -25,9 +22,6 @@ export class ApiServiceFpa {
         }
     }
 
-    /**
-     * Cadastra um novo projeto acionando o schema basal fixo
-     */
     async cadastrarProjeto(dadosProjeto) {
         const url = baseUrl + '/api/projetos';
         try {
@@ -42,32 +36,11 @@ export class ApiServiceFpa {
             return false;
         }
     }
-        /**
-     * Atualiza os dados de um projeto existente passando o ID no final da URL
-     * Contrato homologado: PUT /api/projetos/{projeto_id}
-     */
-    async atualizarProjeto(projetoId, dadosProjeto) {
-        const url = baseUrl + '/api/projetos/' + projetoId;
-        try {
-            const resposta = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosProjeto)
-            });
-            return resposta.ok;
-        } catch (erro) {
-            console.error("Erro no SQLite [atualizarProjeto]:", erro);
-            return false;
-        }
-    }
 
     // ==========================================================================
     // 📋 2. MÓDULO DE FUNÇÕES COMPONENTES FPA (Equivalente ao ApiServiceFuncao)
     // ==========================================================================
 
-    /**
-     * Busca todas as funções mapeadas passando o ID obrigatoriamente no MEIO da URL
-     */
     async listarFuncoes(projetoId) {
         const url = baseUrl + '/api/projetos/' + projetoId + '/funcoes';
         try {
@@ -80,9 +53,6 @@ export class ApiServiceFpa {
         }
     }
 
-    /**
-     * Cadastra uma função de escopo disparando dinamicamente as TRIGGERs internas
-     */
     async cadastrarFuncao(dadosFuncao) {
         const url = baseUrl + '/api/funcoes';
         try {
@@ -98,27 +68,21 @@ export class ApiServiceFpa {
         }
     }
 
-    /**
-     * Atualiza uma função componente em edição pelo ID físico da subquery
-     */
     async atualizarFuncao(funcaoId, dadosFuncao) {
         const url = baseUrl + '/api/funcoes/' + funcaoId;
         try {
-            const resposta = await fetch(url, {
+            const MathResposta = await fetch(url, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dadosFuncao)
             });
-            return resposta.ok;
+            return MathResposta.ok;
         } catch (erro) {
             console.error("Erro no SQLite [atualizarFuncao]:", erro);
             return false;
         }
     }
 
-    /**
-     * Deleta uma função removendo-a permanentemente do escopo técnico
-     */
     async deletarFuncao(funcaoId) {
         const url = baseUrl + '/api/funcoes/' + funcaoId;
         try {
@@ -131,12 +95,9 @@ export class ApiServiceFpa {
     }
 
     // ==========================================================================
-    // 📊 3. MÓDULO DE RELATÓRIOS E MATRIZES (Equivalente ao ApiServiceRelatorio)
+    // 📊 3. MÓDULO DE RELATÓRIOS E COMPILADORES MULTI-ROTAS DO PDF
     // ==========================================================================
 
-    /**
-     * Captura os dados calculados agregados (PF Bruto, Fator Ajuste, Valor Estimativa)
-     */
     async buscarRelatorioFinal(projetoId) {
         const url = baseUrl + '/api/projetos/' + projetoId + '/fatores-detalhado';
         try {
@@ -149,9 +110,6 @@ export class ApiServiceFpa {
         }
     }
 
-    /**
-     * Busca a planilha com a Matriz Oficial cruzada de complexidades e pesos
-     */
     async buscarMatrizContagem(projetoId) {
         const url = baseUrl + '/api/projetos/' + projetoId + '/matriz-calculo';
         try {
@@ -164,9 +122,6 @@ export class ApiServiceFpa {
         }
     }
 
-    /**
-     * Busca os dados consolidados de fatiamento tridimensional de horas por fase da Railway
-     */
     async obterPlanejamentoHoras(projetoId) {
         const url = baseUrl + '/api/projetos/' + projetoId + '/planejamento';
         try {
@@ -178,19 +133,53 @@ export class ApiServiceFpa {
             throw erro;
         }
     }
-        // ==========================================================================
-    // 🛡️ 4. MÓDULO DE BACKUPS (Contratos Corrigidos com /api/sistema)
+
+    async obterResumoExecutivo(projetoId) {
+        // Rota corrigida com o Case Sensitivity "resumo-Executivo" do seu FastAPI
+        const url = baseUrl + '/api/projetos/' + projetoId + '/resumo-executivo';
+        try {
+            const resposta = await fetch(url);
+            if (!resposta.ok) throw new Error('Erro no resumo (' + resposta.status + ')');
+            return await resposta.json();
+        } catch (erro) {
+            console.error("Erro no SQLite [obterResumoExecutivo]:", erro);
+            throw erro;
+        }
+    }
+
+    async obterPrecificacao(projetoId) {
+        const url = baseUrl + '/api/projetos/' + projetoId + '/precificacao';
+        try {
+            const resposta = await fetch(url);
+            if (!resposta.ok) throw new Error('Erro na precificação (' + resposta.status + ')');
+            return await resposta.json();
+        } catch (erro) {
+            console.error("Erro no SQLite [obterPrecificacao]:", erro);
+            throw erro;
+        }
+    }
+
+    async obterRelatorioAnalitico(projetoId) {
+        const url = baseUrl + '/api/projetos/' + projetoId + '/relatorio-analitico';
+        try {
+            const resposta = await fetch(url);
+            if (!resposta.ok) throw new Error('Erro no analítico (' + resposta.status + ')');
+            return await resposta.json();
+        } catch (erro) {
+            console.error("Erro no SQLite [obterRelatorioAnalitico]:", erro);
+            throw erro;
+        }
+    }
+
+    // ==========================================================================
+    // ⚙️ 4. MÓDULO ADMIN, CARACTERÍSTICAS E SISTEMA DE Snapshots
     // ==========================================================================
 
-    /**
-     * Busca os 14 fatores de influência vinculados ao projeto ativo
-     */
     async obterFatoresPorProjeto(projetoId) {
         const url = baseUrl + '/api/projetos/' + projetoId + '/fatores-detalhado';
         try {
             const resposta = await fetch(url);
             if (!resposta.ok) throw new Error('Erro ao ler fatores (' + resposta.status + ')');
-            // Como unificamos, se o seu backend devolver envelopado, desembrulhamos o nó na view
             return await resposta.json();
         } catch (erro) {
             console.error("Erro no SQLite [obterFatoresPorProjeto]:", erro);
@@ -198,9 +187,6 @@ export class ApiServiceFpa {
         }
     }
 
-    /**
-     * Atualiza via persistência otimista a nota de um fator específico no banco
-     */
     async atualizarNotaFator(projetoId, nomeFator, novaNota) {
         const url = baseUrl + '/api/fatores/atualizar';
         try {
@@ -219,31 +205,23 @@ export class ApiServiceFpa {
             return false;
         }
     }
-    /**
-     * Lista os arquivos de snapshots retornados como Array de Strings simples do Python
-     */
+
     async listarBackups() {
         const url = baseUrl + '/api/sistema/backups';
         try {
-            const respuesta = await fetch(url);
-            if (!respuesta.ok) throw new Error('Erro ao listar diretório (' + respuesta.status + ')');
-            return await respuesta.json(); // Retorna o array de strings puro
+            const resposta = await fetch(url);
+            if (!resposta.ok) throw new Error('Erro ao listar diretório (' + resposta.status + ')');
+            return await resposta.json();
         } catch (erro) {
             console.error("Erro no SQLite [listarBackups]:", erro);
             return [];
         }
     }
 
-    /**
-     * Dispara a criação de um snapshot de segurança com retorno Status 201
-     */
     async criarBackup() {
         const url = baseUrl + '/api/sistema/backup';
         try {
-            const resposta = await fetch(url, { 
-                method: 'POST',
-                headers: { 'accept': '*/*' }
-            });
+            const resposta = await fetch(url, { method: 'POST', headers: { 'accept': '*/*' } });
             return resposta.status === 201 || resposta.ok;
         } catch (erro) {
             console.error("Erro ao gerar snapshot no Python:", erro);
@@ -251,13 +229,10 @@ export class ApiServiceFpa {
         }
     }
 
-    /**
-     * Sobrescreve o banco ativo restaurando um arquivo de snapshot histórico
-     */
     async restaurarBackup(nomeArquivo) {
-        const url = baseUrl + '/api/sistema/restaurar'; // Ajuste para a sua rota exata de restore se necessário
+        const url = baseUrl + '/api/sistema/restaurar';
         try {
-            const respuesta = await fetch(url, {
+            const resposta = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ arquivo: nomeArquivo })
@@ -268,13 +243,7 @@ export class ApiServiceFpa {
             return false;
         }
     }
-        // ==========================================================================
-    // ⚙️ 5. MÓDULO DE TIPOS FUNCIONAIS (Contratos com /api/tipofuncaofpa)
-    // ==========================================================================
 
-    /**
-     * Lista todos os tipos funcionais do manual IFPUG direto do banco
-     */
     async listarTiposFuncao() {
         const url = baseUrl + '/api/tipofuncaofpa';
         try {
@@ -287,9 +256,6 @@ export class ApiServiceFpa {
         }
     }
 
-    /**
-     * Cadastra um novo tipo funcional (ALI, EE, etc.) respeitando o CHECK de Categoria
-     */
     async cadastrarTipoFuncao(dadosTipo) {
         const url = baseUrl + '/api/tipofuncaofpa';
         try {
@@ -300,14 +266,10 @@ export class ApiServiceFpa {
             });
             return resposta.ok;
         } catch (erro) {
-            console.error("Erro no SQLite [cadastrarTipoFuncao]:", erro);
-            return false;
+        console.error("Erro no SQLite [cadastrarTipoFuncao]:", erro);
+        return false;
         }
     }
-
-    /**
-     * Atualiza os dados de um tipo funcional existente pelo ID físico
-     */
     async atualizarTipoFuncao(id, dadosTipo) {
         const url = baseUrl + '/api/tipofuncaofpa/' + id;
         try {
@@ -322,10 +284,6 @@ export class ApiServiceFpa {
             return false;
         }
     }
-
-    /**
-     * Remove um tipo do ecossistema se não houverem funções vinculadas (Fail-safe)
-     */
     async deletarTipoFuncao(id) {
         const url = baseUrl + '/api/tipofuncaofpa/' + id;
         try {
@@ -341,16 +299,12 @@ export class ApiServiceFpa {
         try {
             const resposta = await fetch(url);
             if (!resposta.ok) throw new Error('Erro ao buscar tecnologias (' + resposta.status + ')');
-            return await resposta.json();
+                return await resposta.json();
         } catch (erro) {
             console.error("Erro no SQLite [listarTecnologias]:", erro);
             return [];
         }
     }
-
-    /**
-     * Cadastra uma nova tecnologia disparando a validação contra nomes duplicados
-     */
     async cadastrarTecnologia(dadosTec) {
         const url = baseUrl + '/api/tecnologias';
         try {
@@ -365,28 +319,20 @@ export class ApiServiceFpa {
             return erro.message;
         }
     }
-
-    /**
-     * Atualiza os fatores h/PF de uma tecnologia existente pelo ID físico
-     */
     async atualizarTecnologia(id, dadosTec) {
-        const url = baseUrl + '/api/tecnologias/' + id;
-        try {
-            const resposta = await fetch(url, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosTec)
-            });
-            return resposta.ok ? "sucesso" : "Erro ao atualizar registro.";
-        } catch (erro) {
-            console.error("Erro no SQLite [atualizarTecnologia]:", erro);
-            return erro.message;
-        }
+    const url = baseUrl + '/api/tecnologias/' + id;
+    try {
+    const resposta = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dadosTec)
+    });
+    return resposta.ok ? "sucesso" : "Erro ao atualizar registro.";
+    } catch (erro) {
+    console.error("Erro no SQLite [atualizarTecnologia]:", erro);
+    return erro.message;
     }
-
-    /**
-     * Remove uma tecnologia do ecossistema caso não existam projetos associados
-     */
+    }
     async deletarTecnologia(id) {
         const url = baseUrl + '/api/tecnologias/' + id;
         try {
@@ -398,4 +344,3 @@ export class ApiServiceFpa {
         }
     }
 }
-

@@ -1,7 +1,7 @@
 import { CronogramaView } from './cronogramaView.js';
+
 import { ProjetosView } from './projetosView.js';
 import { FuncoesView } from './funcoesView.js';
-import { DashboardView } from './dashboardView.js';
 import { AdminView } from './adminView.js';
 /**
  * Gerenciador de Views Centralizado (Equivalente ao MainNavigationShell do Flutter)
@@ -112,9 +112,12 @@ export class ViewManager {
                     await viewProjetos.renderizar();
                     break;
                 case 'dashboard':
+                    // 🚀 Burlar o cache da view injetando uma query string estática atualizada
+                    const { DashboardView } = await import('./dashboardView.js?v=final_fix');
                     const viewDashboard = new DashboardView(this);
                     await viewDashboard.renderizar();
                     break;
+
                case 'horas':
                     const viewFuncoes = new FuncoesView(this);
                     await viewFuncoes.renderizar();

@@ -57,26 +57,29 @@
     </div>
 
     <!-- Script de Inicialização da UI e Registro do PWA -->
-    <script type="module">
-        // 🛡️ REGISTRO DO SERVICE WORKER (Ativa o comportamento PWA Offline de forma nativa)
+        <script type="module">
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('./sw.js') 
                     .then(registro => {
-                        console.log('Service Worker registrado com sucesso no escopo:', registro.scope);
-                    })
-                    .catch(erro => {
-                        console.error('Falha ao registrar o Service Worker:', erro);
+                        console.log('📦 Service Worker ativo no escopo:', registro.scope);
                     });
             });
         }
-
-        // Inicialização do Gerenciador de Views (Criaremos nas próximas etapas)
-        import { ViewManager } from './js/presentation/viewmanager.js';
-        window.addEventListener('DOMContentLoaded', () => {
-            const manager = new ViewManager();
-            manager.inicializar();
+        
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // 🚀 IMPORT DINÂMICO NATIVO: Aceita concatenação e quebra o cache de vez
+                const urlModificado = './js/presentation/viewmanager.js?v=' + Date.now();
+                const modulo = await import(urlModificado);
+                
+                const manager = new modulo.ViewManager();
+                manager.inicializar();
+            } catch (erro) {
+                console.error("Erro ao inicializar o motor PWA:", erro);
+            }
         });
     </script>
+
 </body>
 </html>

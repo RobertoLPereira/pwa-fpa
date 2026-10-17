@@ -632,3 +632,53 @@ body {
         grid-template-columns: 1fr;
     }
 }
+/* ==========================================================================
+   11. REGRAS NATIVAS DE IMPRESSÃO E EXPORTAÇÃO PARA PDF (IFPUG)
+   ========================================================================== */
+@media print {
+    /* Esconde elementos da interface do aplicativo que não devem ir para o PDF */
+    .app-bar, .navigation-menu, .btn-fpa-primario, .campo-acoes-inline, button {
+        display: none !important;
+    }
+
+    /* Remove restrições de altura e scrolls do container para o PDF fluir continuamente */
+    body, .layout-shell, .viewport-content {
+        overflow: visible !important;
+        height: auto !important;
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Configuração da Página A4 nativa */
+    @page {
+        size: a4;
+        margin: 1.5cm;
+    }
+
+    /* Força o navegador a renderizar as cores de fundo escuras e chips das planilhas */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Evita que linhas de tabelas sejam cortadas ao meio entre uma página e outra */
+    tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    h3, h4 {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    .card-fpa {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin-bottom: 24px !important;
+        page-break-inside: avoid;
+    }
+}
